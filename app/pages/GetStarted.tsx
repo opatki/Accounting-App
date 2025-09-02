@@ -1,5 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faChartLine, faBook, faFileInvoiceDollar } from "@fortawesome/free-solid-svg-icons"
+import  Link  from 'next/link'
+
 
 export default function GetStarted() {
   return (
@@ -13,27 +15,27 @@ export default function GetStarted() {
           <p className="text-lg md:text-xl mb-6 py-4">
             Turn your journal entries into accurate financial statements—instantly.
           </p>
-          <a
-            href="#get-started"
-            className="bg-[#C1856D] hover:bg-[#9A3F3F] text-2xl text-white px-6 py-3 rounded-lg font-semibold"
+          <Link
+            href="/signup"
+            className="bg-[#9A3F3F] hover:bg-[#5A0808] text-2xl text-white px-6 py-3 rounded-lg font-semibold"
           >
             Get Started
-          </a>
+          </Link>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-16 bg-[#FBF9D1]">
+      <section className="pt-10 pb-15 bg-[#FBF9D1]">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold mb-12 text-[#9A3F3F]">
+          <h2 className="text-4xl font-bold mb-6 text-[#9A3F3F]">
             Why Choose Bookify?
           </h2>
-          <div className="grid md:grid-cols-3 gap-8 text-[#6b2929]">
+          <div className="grid md:grid-cols-3 gap-8 text-[#faf3d1]">
             {/* Feature 1 */}
-            <div className="bg-[#faf3d1] p-6 rounded-xl shadow hover:shadow-lg transition">
+            <div className="bg-[#9A3F3F] p-6 rounded-xl shadow hover:shadow-lg transition">
               <FontAwesomeIcon
                 icon={faBook}
-                className="text-[#C1856D] text-5xl mb-4"
+                className="text-5xl mb-4"
               />
               <h3 className="text-xl font-semibold mb-2">Easy Journal Entries</h3>
               <p>
@@ -42,10 +44,10 @@ export default function GetStarted() {
             </div>
 
             {/* Feature 2 */}
-            <div className="bg-[#faf3d1] p-6 rounded-xl shadow hover:shadow-lg transition">
+            <div className="bg-[#9A3F3F] p-6 rounded-xl shadow hover:shadow-lg transition">
               <FontAwesomeIcon
                 icon={faFileInvoiceDollar}
-                className="text-[#C1856D] text-5xl mb-4"
+                className="text-5xl mb-4"
               />
               <h3 className="text-xl font-semibold mb-2">Automated Statements</h3>
               <p>
@@ -54,10 +56,10 @@ export default function GetStarted() {
             </div>
 
             {/* Feature 3 */}
-            <div className="bg-[#faf3d1] p-6 rounded-xl shadow hover:shadow-lg transition">
+            <div className="bg-[#9A3F3F] p-6 rounded-xl shadow hover:shadow-lg transition">
               <FontAwesomeIcon
                 icon={faChartLine}
-                className="text-[#C1856D] text-5xl mb-4"
+                className="text-5xl mb-4"
               />
               <h3 className="text-xl font-semibold mb-2">Accurate & Compliant</h3>
               <p>

@@ -8,7 +8,7 @@ export default function Header() {
             <Logo />
             <SignedOut>
                 <SignInButton>
-                <button type="button" className="bg-[#C1856D] text-white px-4 py-2 cursor-pointer rounded">
+                <button type="button" className="text-white px-4 py-2 cursor-pointer rounded hover:bg-[#5A0808]">
                     Sign in
                 </button>
                 </SignInButton>
