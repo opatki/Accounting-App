@@ -2,11 +2,12 @@ import type { ReactNode } from "react"
 
 // Data Types
 export type Org = {
+    id: string
     name: string
     description: string
-    image: string
     user_id: string
 }
+
 
 export type GetModelsParams = {
     category?: string
@@ -20,9 +21,18 @@ export type OrganizationPageProps = {
 }
 
 export type OrgCardProps = {
+    id: string
     name: string
-    image: string
     description: string
+    onEdit: () => void
+    onDelete: () => void
+}
+
+export type DeleteConfirmationModalProps = {
+    isOpen: boolean
+    orgName: string
+    onConfirm: () => void
+    onCancel: () => void
 }
 
 export type RootLayoutProps = Readonly<{

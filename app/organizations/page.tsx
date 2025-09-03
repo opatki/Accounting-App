@@ -1,13 +1,69 @@
 "use client"
 
 import { newOrg } from "../utils/newOrg"
-import { useState } from "react"
+import { updateOrg } from "../utils/updateOrg"
+import { deleteOrg } from "../utils/deleteOrg"
+import { useState, useEffect } from "react"
 import type { Org } from "../types"
 import OrgCard from "../components/OrgCard"
+import DeleteConfirmationModal from "../components/DeleteConfirmationModal"
+import { useRouter } from 'next/navigation'
 
 export default function Organizations({ organizations }: { organizations: Org[] }) {
     const [showForm, setShowForm] = useState(false)
-    
+    const [showDeleteModal, setShowDeleteModal] = useState(false)
+    const [editingOrg, setEditingOrg] = useState<Org | null>(null)
+    const [orgToDelete, setOrgToDelete] = useState<Org | null>(null)
+    const router = useRouter()
+
+    useEffect(() => {
+        if (!showForm) {
+            router.refresh()
+        }
+    }, [showForm, router])
+
+
+    function handleSubmit() {
+        setShowForm(false)
+        setEditingOrg(null)
+    }
+
+    function handleEdit(org: Org) {
+        setEditingOrg(org)
+        setShowForm(true)
+    }
+
+    function handleDeleteClick(org: Org) {
+        setOrgToDelete(org)
+        setShowDeleteModal(true)
+    }
+
+    async function handleDeleteConfirm() {
+        if (orgToDelete) {
+            const result = await deleteOrg(orgToDelete.id)
+            
+            if (result?.error) {
+                alert(`Error: ${result.error}`)
+            } else {
+                // Success - the revalidatePath in deleteOrg will refresh the data
+            }
+        }
+        setShowDeleteModal(false)
+        setOrgToDelete(null)
+    }
+
+    function handleDeleteCancel() {
+        setShowDeleteModal(false)
+        setOrgToDelete(null)
+    }
+
+
+    function handleCloseForm() {
+        setShowForm(false)
+        setEditingOrg(null)
+    }
+
+
     return (
         <div className="bg-[#F7F7BF] min-h-100">
             
@@ -19,9 +75,14 @@ export default function Organizations({ organizations }: { organizations: Org[] 
                 </button>
             </div>
 
-            <div className="flex justify-center gap-3.5 border-t border-[#9A3F3F] text-[#9A3F3F] pt-4 mx-5">  
+            <div className="flex flex-wrap justify-center gap-3.5 border-t border-[#9A3F3F] text-[#9A3F3F] pt-4 m-5">  
                 {organizations.map((org, index) => (
-                    <OrgCard key={index} {...org} />
+                    <OrgCard key={index} 
+                            id={org.id} 
+                            name={org.name} 
+                            description={org.description} 
+                            onEdit={() => handleEdit(org)}
+                            onDelete={() => handleDeleteClick(org)} />
                 ))}
             </div>
 
@@ -31,70 +92,68 @@ export default function Organizations({ organizations }: { organizations: Org[] 
                     {/* Close button */}
                     <button
                         className="absolute top-3 right-3 text-gray-600 hover:text-black"
-                        onClick={() => setShowForm(false)}
+                        onClick={handleCloseForm}
                     >
                         ✕
                     </button>
 
-                    <form action={newOrg} onSubmit={() => setShowForm(false)} className="space-y-4">
+                    <form action={editingOrg ? updateOrg : newOrg} onSubmit={handleSubmit} className="space-y-4">
+                        
+                        {editingOrg && (
+                            <input type="hidden" name="id" value={editingOrg.id} />
+                        )}
+                        
                         <div>
-                        <label htmlFor="name" className="block font-semibold mb-1">
-                            Name
-                        </label>
-                        <input
-                            id="name"
-                            type="text"
-                            name="name"
-                            required
-                            className="w-full border border-gray-300 rounded-lg p-2"
-                        />
+                            <label htmlFor="name" className="block font-semibold mb-1">
+                                Name
+                            </label>
+                            <input
+                                id="name"
+                                type="text"
+                                name="name"
+                                required
+                                defaultValue={editingOrg?.name || ""}
+                                className="w-full border border-gray-300 rounded-lg p-2"
+                            />
                         </div>
 
                         <div>
-                        <label htmlFor="image" className="block font-semibold mb-1">
-                            Image
-                        </label>
-                        <p className="text-sm text-gray-500">
-                            Provide a link to an image of your creator. Be sure to include
-                            the http://
-                        </p>
-                        <input
-                            id="image"
-                            type="text"
-                            name="image"
-                            className="w-full border border-gray-300 rounded-lg p-2"
-                        />
-                        </div>
-
-                        <div>
-                        <label
-                            htmlFor="description"
-                            className="block font-semibold mb-1"
-                        >
-                            Description
-                        </label>
-                        <p className="text-sm text-gray-500">
-                            Provide a description of the creator. Who are they? What makes
-                            them interesting?
-                        </p>
-                        <textarea
-                            id="description"
-                            name="description"
-                            required
-                            className="w-full border border-gray-300 rounded-lg p-2"
-                        ></textarea>
+                            <label
+                                htmlFor="description"
+                                className="block font-semibold mb-1"
+                            >
+                                Description
+                            </label>
+                            <p className="text-sm text-gray-500">
+                                Provide a description of the organization. What is it? What makes
+                                it interesting?
+                            </p>
+                            <textarea
+                                id="description"
+                                name="description"
+                                required
+                                defaultValue={editingOrg?.description || ""}
+                                className="w-full border border-gray-300 rounded-lg p-2"
+                            ></textarea>
                         </div>
 
                         <button
                         type="submit"
                         className="bg-[#9A3F3F] hover:bg-[#5A0808] text-white px-6 py-2 rounded-lg font-semibold"
                         >
-                        SUBMIT
+                        {editingOrg ? "UPDATE" : "SUBMIT"}
                         </button>
                     </form>
                     </div>
                 </div>
                 )}
+
+                <DeleteConfirmationModal
+                isOpen={showDeleteModal}
+                orgName={orgToDelete?.name || ""}
+                onConfirm={handleDeleteConfirm}
+                onCancel={handleDeleteCancel}
+            />
         </div>
     )
 }

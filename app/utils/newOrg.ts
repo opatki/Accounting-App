@@ -8,9 +8,8 @@ export async function newOrg(formData: FormData) {
 
     const { userId } = await auth()
     console.log(userId)
-    const org: Org = {
+    const org: Partial<Org> = {
       name: (formData.get("name") as string) || "",
-      image: (formData.get("image") as string) || "",
       description: (formData.get("description") as string) || "",
       user_id: userId as string || ""
     }
