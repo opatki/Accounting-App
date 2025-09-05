@@ -1,8 +1,8 @@
 "use server"
 
-import { supabase } from './supabase/server'
+import { supabase } from '../server'
 import { auth } from "@clerk/nextjs/server"
-import type { Org } from '../types'
+import type { Org } from '@/app/types'
 
 export async function newOrg(formData: FormData) {
 
@@ -10,6 +10,8 @@ export async function newOrg(formData: FormData) {
     console.log(userId)
     const org: Partial<Org> = {
       name: (formData.get("name") as string) || "",
+      image: (formData.get("image") as string) || "",
+      link: (formData.get("link") as string) || "",
       description: (formData.get("description") as string) || "",
       user_id: userId as string || ""
     }

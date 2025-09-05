@@ -1,17 +1,11 @@
 "use server"
 
-import { supabase } from './supabase/server'
+import { supabase } from "../server"
 import { auth } from "@clerk/nextjs/server"
 import { revalidatePath } from "next/cache"
 
-export async function deleteOrg(orgId: string) {
+export async function deleteOrg(org_id: string) {
   const { userId } = await auth()
-  
-  if (!orgId) {
-    console.error('No organization ID provided')
-    return { error: "No organization ID provided" }
-  }
-
   if (!userId) {
     console.error('User not authenticated')
     return { error: "User not authenticated" }
@@ -22,7 +16,7 @@ export async function deleteOrg(orgId: string) {
     const { data: org, error: fetchError } = await supabase
       .from('organizations')
       .select('user_id')
-      .eq('id', orgId)
+      .eq('id', org_id)
       .single()
 
     if (fetchError) {
@@ -39,14 +33,14 @@ export async function deleteOrg(orgId: string) {
     const { error: deleteError } = await supabase
       .from('organizations')
       .delete()
-      .eq('id', orgId)
+      .eq('org_id', org_id)
 
     if (deleteError) {
       console.error('Error deleting organization:', deleteError)
       return { error: "Failed to delete organization" }
     }
 
-    console.log('Successfully deleted organization:', orgId)
+    console.log('Successfully deleted organization:', org_id)
     
     // Revalidate the page to show updated list
     revalidatePath('/organizations')

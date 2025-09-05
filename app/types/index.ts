@@ -1,16 +1,14 @@
 import type { ReactNode } from "react"
+import { JSXSource } from "react/jsx-dev-runtime"
 
 // Data Types
 export type Org = {
-    id: string
+    org_id: string
     name: string
     description: string
+    image?: string
+    link?: string
     user_id: string
-}
-
-
-export type GetModelsParams = {
-    category?: string
 }
 
 // Page Types
@@ -21,7 +19,7 @@ export type OrganizationPageProps = {
 }
 
 export type OrgCardProps = {
-    id: string
+    org_id: string
     name: string
     description: string
     onEdit: () => void
@@ -39,26 +37,27 @@ export type RootLayoutProps = Readonly<{
     children: React.ReactNode;
 }>
 
-export type ModelsPageProps = {
-    searchParams: {
-        q?: string
-    }
+export type JournalEntry = {
+  entry_id: string
+  created_at: string
+  date: string
+  description: string
+  org_id: string
+  lines: JournalEntryLine[] | null
 }
 
-export type ModelDetailPageProps = {
+export type JournalEntryLine = {
+  line_id: string
+  created_at: string
+  account_name: string
+  account_type: string
+  debit: number 
+  credit: number 
+  entry_id: string
+}
+
+export type JournalEntriesPageProps = {
     params: Promise<{
-        id: string
+        orgId: string
     }>
-}
-
-
-export type PillProps = {
-    children: ReactNode
-    className?: string
-}
-
-export type NavLinkProps = {
-    href: string
-    children: ReactNode
-    isActive?: boolean
 }

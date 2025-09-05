@@ -5,6 +5,7 @@ import  Footer  from './components/Footer'
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import './globals.css'
+import type { RootLayoutProps } from './types';
 
 config.autoAddCss = false;
 
@@ -13,11 +14,7 @@ export const metadata: Metadata = {
   description: 'Solves all your accounting problems',
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <ClerkProvider>
       <html lang="en">

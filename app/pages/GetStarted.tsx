@@ -5,7 +5,7 @@ import  Link  from 'next/link'
 
 export default function GetStarted() {
   return (
-    <div className="min-h-screen">
+    <main className="flex-grow">
       {/* Hero Section */}
       <section className="bg-[#E6CFA9] text-[#9A3F3F] py-12">
         <div className="container mx-auto text-center px-6 py-6">
@@ -25,7 +25,7 @@ export default function GetStarted() {
       </section>
 
       {/* Features Section */}
-      <section className="pt-10 pb-15 bg-[#FBF9D1]">
+      <section className="pt-10 pb-15 bg-[#F7F7BF]">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-4xl font-bold mb-6 text-[#9A3F3F]">
             Why Choose Bookify?
@@ -69,6 +69,6 @@ export default function GetStarted() {
           </div>
         </div>
       </section>
-    </div>
+    </main>
   )
 }
