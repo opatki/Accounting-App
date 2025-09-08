@@ -5,7 +5,7 @@ import { updateOrg } from "../utils/supabase/organizations/updateOrg"
 import { deleteOrg } from "../utils/supabase/organizations/deleteOrg"
 import { useState, useEffect } from "react"
 import type { Org } from "../types"
-import OrgCard from "../components/OrgCard"
+import OrgCard from "../components/organizations/OrgCard"
 import DeleteConfirmationModal from "../components/DeleteConfirmationModal"
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'

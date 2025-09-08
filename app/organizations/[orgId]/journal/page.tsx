@@ -16,9 +16,7 @@ export default async function JournalEntriesPage({ params }: JournalEntriesPageP
       )
     : []
 
-  console.log(complete_entries)
-
   return (
-     <JournalEntries entries={complete_entries} /> 
+     <JournalEntries entries={complete_entries} org_id={orgId} /> 
   )
 }

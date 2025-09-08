@@ -1,4 +1,4 @@
-import type { OrgCardProps } from '../types/index'
+import type { OrgCardProps } from '@/app/types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPencil, faTrash } from '@fortawesome/free-solid-svg-icons'
 import Link from "next/link"

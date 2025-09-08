@@ -1,5 +1,5 @@
 import { getSingleOrg } from "@/app/utils/supabase/organizations/getSingleOrg"
-import OrgNav from "@/app/components/OrgNav"
+import OrgNav from "@/app/components/organizations/OrgNav"
 
 export default async function OrgLayout({
   children, params
