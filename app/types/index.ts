@@ -60,4 +60,9 @@ export type JournalEntriesPageProps = {
     params: Promise<{
         orgId: string
     }>
+    searchParams?: Promise<{
+        startDate?: string
+        endDate?: string
+        [key: string]: string | string[] | undefined
+    }>
 }

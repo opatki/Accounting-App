@@ -17,11 +17,15 @@ export default function JournalEntryList({
     window.location.reload()
   }
 
+  const today = new Date().toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'})
+
   return (
     <div className="border-3 border-[#9A3F3F]">
-      <h1 className="bg-[#9A3F3F] text-center text-3xl text-white p-5 font-bold">
-        General Journal
-      </h1>
+      <div className="bg-[#9A3F3F] text-center text-3xl text-white p-5 font-bold">
+        <h1>General Journal</h1>
+        <p className="text-[.6em]">{today}</p>
+      </div>
+      
       <div className="m-2 border-2 border-[#9A3F3F]">
         {/* table header */}
         <div className="grid grid-cols-[10%_72.1%_8.9%_9%] text-[#9A3F3F] text-center text-2x1 font-bold bg-[#E6CFA9] border-b border-[#9A3F3F]">

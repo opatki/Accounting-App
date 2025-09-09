@@ -57,10 +57,10 @@ export default function JournalEntryForm({ org_id, lines, setLines, resetForm, e
   return (
     <div className="border-4 border-[#9A3F3F] w-full mb-5">
       <div className="grid grid-cols-[10%_15%_57.15%_8.9%_9%] text-[#9A3F3F] text-center text-2x1 font-bold bg-[#E6CFA9] border-b border-[#9A3F3F]">
-        <p className="border-r-2 border-[#9A3F3F] py-2">DATE</p>
-        <p className="border-r-2 border-[#9A3F3F] py-2">ACCOUNT TYPE</p>
-        <p className="border-r-2 border-[#9A3F3F] py-2">ACCOUNT NAME</p>
-        <p className="border-r-2 border-[#9A3F3F] py-2">DEBIT</p>
+        <p className="border-r-1 border-[#9A3F3F] py-2">DATE</p>
+        <p className="border-r-1 border-[#9A3F3F] py-2">ACCOUNT TYPE</p>
+        <p className="border-r-1 border-[#9A3F3F] py-2">ACCOUNT NAME</p>
+        <p className="border-r-1 border-[#9A3F3F] py-2">DEBIT</p>
         <p className="py-2">CREDIT</p>
       </div>
 
