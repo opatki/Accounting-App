@@ -25,7 +25,8 @@ export default function JournalEntryList({
         <h1>General Journal</h1>
         <p className="text-[.6em]">{today}</p>
       </div>
-      
+
+      {entries.length === 0 ? <h1 className="text-center my-4 text-1xl text-[#9A3F3F]">You have no entries yet...</h1> :
       <div className="m-2 border-2 border-[#9A3F3F]">
         {/* table header */}
         <div className="grid grid-cols-[10%_72.1%_8.9%_9%] text-[#9A3F3F] text-center text-2x1 font-bold bg-[#E6CFA9] border-b border-[#9A3F3F]">
@@ -34,7 +35,6 @@ export default function JournalEntryList({
           <p className="border-r px-4 py-1">DEBIT</p>
           <p className="px-4 py-1">CREDIT</p>
         </div>
-
         {entries.map((entry, i) => (
           <JournalEntryItem
             key={entry.entry_id}
@@ -44,7 +44,7 @@ export default function JournalEntryList({
             onEdit={onEdit}
           />
         ))}
-      </div>
+      </div>}
     </div>
   )
 }

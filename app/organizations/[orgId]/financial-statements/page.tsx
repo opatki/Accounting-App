@@ -11,15 +11,17 @@ type LineRow = {
   date: string;
 };
 
-export default function IncomeStatement() {
+export default function IncomeStatement({ params }: { params: Promise<{ orgId: string }> }) {
   const [rows, setRows] = useState<LineRow[]>([]);
-  const [filter, setFilter] = useState<"month" | "quarter" | "year" | "all">("month");
+  const [filter, setFilter] = useState<"month" | "quarter" | "year" | "all">("all");
 
   useEffect(() => {
     async function fetchData() {
+      const { orgId } = await params;
       const { data, error } = await supabase
         .from("journal_entry_lines")
-        .select("account_name, account_type, debit, credit, journal_entries(date)")
+        .select("account_name, account_type, debit, credit, journal_entries!inner (date,org_id)")
+        .eq("journal_entries.org_id", orgId)
         .order("created_at", { ascending: true });
 
       if (error) {
@@ -58,16 +60,47 @@ export default function IncomeStatement() {
           return rowDate >= cutoff && rowDate <= now;
         });
 
-  // Revenues & Expenses
-  const revenues = filteredRows.filter(r => r.account_type === "Revenue");
-  const expenses = filteredRows.filter(r => r.account_type === "Expense");
+  // Helper: group by account_name and sum debit/credit
+  function aggregateAccounts(rows: LineRow[], type: "Revenue" | "Expense") {
+    const grouped: { [key: string]: number } = {};
 
-  const totalRevenue = revenues.reduce((acc, r) => acc + r.credit, 0);
-  const totalExpenses = expenses.reduce((acc, r) => acc + r.debit, 0);
+    rows
+      .filter((r) => r.account_type === type)
+      .forEach((r) => {
+        if (type === "Revenue") {
+          grouped[r.account_name] = (grouped[r.account_name] || 0) + r.credit;
+        } else {
+          grouped[r.account_name] = (grouped[r.account_name] || 0) + r.debit;
+        }
+      });
+
+    return Object.entries(grouped).map(([account, amount]) => ({
+      account_name: account,
+      amount,
+    }));
+  }
+
+  // Aggregated revenues & expenses
+  const revenueAccounts = aggregateAccounts(filteredRows, "Revenue");
+  const expenseAccounts = aggregateAccounts(filteredRows, "Expense");
+
+  const totalRevenue = revenueAccounts.reduce((acc, r) => acc + r.amount, 0);
+  const totalExpenses = expenseAccounts.reduce((acc, e) => acc + e.amount, 0);
   const netIncome = totalRevenue - totalExpenses;
 
-  const today = now.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
-  const filterLabel = filter === "month" ? "Month" : filter === "quarter" ? "Quarter" : filter === "year" ? "Year" : "All";
+  const today = now.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+  const filterLabel =
+    filter === "month"
+      ? "Month"
+      : filter === "quarter"
+      ? "Quarter"
+      : filter === "year"
+      ? "Year"
+      : "All";
 
   return (
     <>
@@ -77,6 +110,9 @@ export default function IncomeStatement() {
           onChange={(e) => setFilter(e.target.value as any)}
           className="border rounded px-3 py-2 shadow text-[#9A3F3F] font-semibold"
         >
+          <option value="" disabled>
+            Select Accounting Period
+          </option>
           <option value="month">Past Month</option>
           <option value="quarter">Past Quarter</option>
           <option value="year">Past Year</option>
@@ -87,16 +123,20 @@ export default function IncomeStatement() {
       <div className="border-3 border-[#9A3F3F] mx-5 mb-5">
         <div className="bg-[#9A3F3F] text-center text-3xl text-white p-5 font-bold">
           <h1>Income Statement</h1>
-          {filterLabel !== "All" && <p className="text-[0.6em]">For {filterLabel} Ending {today}</p>}
+          {filterLabel !== "All" && (
+            <p className="text-[0.6em]">
+              For {filterLabel} Ending {today}
+            </p>
+          )}
         </div>
 
         <div className="p-6 text-[#9A3F3F]">
           <h2 className="font-bold text-lg mb-2">Revenues</h2>
           <ul>
-            {revenues.map((r, idx) => (
+            {revenueAccounts.map((r, idx) => (
               <li key={idx} className="flex justify-between">
                 <span>{r.account_name}</span>
-                <span>{r.credit.toLocaleString()}</span>
+                <span>{r.amount.toLocaleString()}</span>
               </li>
             ))}
           </ul>
@@ -107,10 +147,10 @@ export default function IncomeStatement() {
 
           <h2 className="font-bold text-lg mt-6 mb-2">Expenses</h2>
           <ul>
-            {expenses.map((e, idx) => (
+            {expenseAccounts.map((e, idx) => (
               <li key={idx} className="flex justify-between">
                 <span>{e.account_name}</span>
-                <span>{e.debit.toLocaleString()}</span>
+                <span>{e.amount.toLocaleString()}</span>
               </li>
             ))}
           </ul>

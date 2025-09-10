@@ -11,15 +11,17 @@ type LineRow = {
   date: string;
 };
 
-export default function StatementOfEquity() {
+export default function StatementOfEquity({ params }: {params: Promise<{ orgId: string }>}) {
   const [rows, setRows] = useState<LineRow[]>([]);
-  const [filter, setFilter] = useState<"month" | "quarter" | "year" | "all">("year");
+  const [filter, setFilter] = useState<"month" | "quarter" | "year" | "all">("all");
 
   useEffect(() => {
     async function fetchData() {
+      const { orgId } = await params
       const { data, error } = await supabase
         .from("journal_entry_lines")
-        .select("account_name, account_type, debit, credit, journal_entries(date)")
+        .select("account_name, account_type, debit, credit, journal_entries!inner (date,org_id)")
+        .eq("journal_entries.org_id", orgId)
         .order("created_at", { ascending: true });
 
       if (error) {
@@ -82,6 +84,9 @@ export default function StatementOfEquity() {
           onChange={(e) => setFilter(e.target.value as any)}
           className="border rounded px-3 py-2 shadow text-[#9A3F3F] font-semibold"
         >
+          <option value="" disabled>
+                Select Accounting Period
+          </option>
           <option value="month">Past Month</option>
           <option value="quarter">Past Quarter</option>
           <option value="year">Past Year</option>
@@ -114,7 +119,7 @@ export default function StatementOfEquity() {
           </div>
 
           <div className="font-bold flex justify-between border-t pt-4 text-xl">
-            <span>Ending Equity</span>
+            <span>Ending Stockholder's Equity</span>
             <span>${endingEquity.toLocaleString()}</span>
           </div>
         </div>

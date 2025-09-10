@@ -11,15 +11,17 @@ type LineRow = {
   date: string;
 };
 
-export default function Ledger() {
+export default function Ledger({ params }: {params: Promise<{ orgId: string }>}) {
   const [rows, setRows] = useState<LineRow[]>([]);
   const [filter, setFilter] = useState<"month" | "quarter" | "year" | "all">("month");
 
   useEffect(() => {
     async function fetchData() {
+      const { orgId } = await params
       const { data, error } = await supabase
         .from("journal_entry_lines")
-        .select("account_name, account_type, debit, credit, journal_entries(date)")
+        .select("account_name, account_type, debit, credit, journal_entries!inner (date,org_id)")
+        .eq("journal_entries.org_id", orgId)
         .order("created_at", { ascending: true });
 
       if (error) {
@@ -166,6 +168,9 @@ export default function Ledger() {
           }
           className="border rounded px-3 py-2 shadow text-[#9A3F3F] font-semibold"
         >
+          <option value="" disabled>
+                Select Accounting Period
+          </option>
           <option value="month">Past Month</option>
           <option value="quarter">Past Quarter</option>
           <option value="year">Past Year</option>
@@ -181,9 +186,10 @@ export default function Ledger() {
             </p>}
         </div>
 
+        {renderAccounts.length === 0 ? <h1 className="text-center my-4 text-1xl text-[#9A3F3F]">You have no entries yet...</h1> : 
         <div className="flex justify-center items-center flex-wrap text-[#9A3F3F] mb-5">
           {renderAccounts}
-        </div>
+        </div>}
       </div>
     </>
   );

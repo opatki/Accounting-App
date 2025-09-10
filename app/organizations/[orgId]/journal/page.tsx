@@ -6,7 +6,7 @@ import { JournalEntriesPageProps } from "@/app/types"
 export default async function JournalEntriesPage({ params, searchParams }: JournalEntriesPageProps) {
   const { orgId } = await params  // no need for await, params is just an object
   const { startDate, endDate } = await searchParams || {}
-  console.log(startDate, endDate)
+
   let entries = await getAllEntries(orgId)
   if (startDate && endDate) {
     const startYear = startDate.slice(0,4)
@@ -37,6 +37,7 @@ export default async function JournalEntriesPage({ params, searchParams }: Journ
         })
       )
     : []
+  
 
   return (
      <JournalEntries entries={complete_entries} org_id={orgId} /> 
