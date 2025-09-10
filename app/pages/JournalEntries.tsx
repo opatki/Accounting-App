@@ -82,7 +82,7 @@ export default function JournalEntries({ entries, org_id }: { entries: JournalEn
   return (
     <div className="mx-5 mb-5">
       <div className="flex items-center justify-between">
-        <select value={selectedValue} onChange={handleChange} className="text-[#9A3F3F] border border-[#9A3F3F] p-2 rounded">
+        <select value={selectedValue} onChange={handleChange} className="text-[#9A3F3F] border border-[#9A3F3F] p-2 rounded font-semibold">
           <option value="" disabled>
                 Select Accounting Period
           </option>

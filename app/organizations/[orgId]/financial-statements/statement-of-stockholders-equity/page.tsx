@@ -11,9 +11,9 @@ type LineRow = {
   date: string;
 };
 
-export default function IncomeStatement() {
+export default function StatementOfEquity() {
   const [rows, setRows] = useState<LineRow[]>([]);
-  const [filter, setFilter] = useState<"month" | "quarter" | "year" | "all">("month");
+  const [filter, setFilter] = useState<"month" | "quarter" | "year" | "all">("year");
 
   useEffect(() => {
     async function fetchData() {
@@ -43,7 +43,6 @@ export default function IncomeStatement() {
     fetchData();
   }, []);
 
-  // Date filter
   const now = new Date();
   let cutoff = new Date();
   if (filter === "month") cutoff.setMonth(now.getMonth() - 1);
@@ -58,13 +57,19 @@ export default function IncomeStatement() {
           return rowDate >= cutoff && rowDate <= now;
         });
 
-  // Revenues & Expenses
+  // Equity components
+  const equityAccounts = filteredRows.filter(r => r.account_type === "Equity");
+  const dividends = filteredRows.filter(r => r.account_type === "Dividend");
   const revenues = filteredRows.filter(r => r.account_type === "Revenue");
   const expenses = filteredRows.filter(r => r.account_type === "Expense");
 
-  const totalRevenue = revenues.reduce((acc, r) => acc + r.credit, 0);
-  const totalExpenses = expenses.reduce((acc, r) => acc + r.debit, 0);
-  const netIncome = totalRevenue - totalExpenses;
+  const totalInvestments = equityAccounts.reduce((acc, e) => acc + (e.credit - e.debit), 0);
+  const totalDividends = dividends.reduce((acc, d) => acc + d.debit, 0);
+  const netIncome = revenues.reduce((acc, r) => acc + r.credit, 0) - expenses.reduce((acc, e) => acc + e.debit, 0);
+
+  // For simplicity, assume beginning equity = 0
+  const beginningEquity = 0;
+  const endingEquity = beginningEquity + totalInvestments + netIncome - totalDividends;
 
   const today = now.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
   const filterLabel = filter === "month" ? "Month" : filter === "quarter" ? "Quarter" : filter === "year" ? "Year" : "All";
@@ -86,42 +91,31 @@ export default function IncomeStatement() {
 
       <div className="border-3 border-[#9A3F3F] mx-5 mb-5">
         <div className="bg-[#9A3F3F] text-center text-3xl text-white p-5 font-bold">
-          <h1>Income Statement</h1>
+          <h1>Statement of Stockholders' Equity</h1>
           {filterLabel !== "All" && <p className="text-[0.6em]">For {filterLabel} Ending {today}</p>}
         </div>
 
         <div className="p-6 text-[#9A3F3F]">
-          <h2 className="font-bold text-lg mb-2">Revenues</h2>
-          <ul>
-            {revenues.map((r, idx) => (
-              <li key={idx} className="flex justify-between">
-                <span>{r.account_name}</span>
-                <span>{r.credit.toLocaleString()}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="font-bold flex justify-between border-t pt-2">
-            <span>Total Revenues</span>
-            <span>{totalRevenue.toLocaleString()}</span>
+          <div className="flex justify-between">
+            <span>Beginning Equity</span>
+            <span>{beginningEquity.toLocaleString()}</span>
           </div>
-
-          <h2 className="font-bold text-lg mt-6 mb-2">Expenses</h2>
-          <ul>
-            {expenses.map((e, idx) => (
-              <li key={idx} className="flex justify-between">
-                <span>{e.account_name}</span>
-                <span>{e.debit.toLocaleString()}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="font-bold flex justify-between border-t pt-2">
-            <span>Total Expenses</span>
-            <span>{totalExpenses.toLocaleString()}</span>
+          <div className="flex justify-between">
+            <span>Add: Investments</span>
+            <span>{totalInvestments.toLocaleString()}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Add: Net Income</span>
+            <span>{netIncome.toLocaleString()}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Less: Dividends</span>
+            <span>{totalDividends.toLocaleString()}</span>
           </div>
 
           <div className="font-bold flex justify-between border-t pt-4 text-xl">
-            <span>Net Income</span>
-            <span>{netIncome.toLocaleString()}</span>
+            <span>Ending Equity</span>
+            <span>${endingEquity.toLocaleString()}</span>
           </div>
         </div>
       </div>

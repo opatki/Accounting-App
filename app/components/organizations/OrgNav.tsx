@@ -17,7 +17,7 @@ export default function OrgNav({ orgId }: { orgId: string }) {
   return (
     <nav className="flex gap-7 mx-5">
       {links.map((link) => {
-        const isActive = pathname === link.href;
+        const isActive = (link.href === `/organizations/${orgId}` && pathname === link.href) || (link.href !== `/organizations/${orgId}` && pathname.startsWith(link.href))
         return (
           <Link
             key={link.href}
