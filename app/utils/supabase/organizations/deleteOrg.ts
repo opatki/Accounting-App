@@ -1,6 +1,6 @@
 "use server"
 
-import { supabaseAdmin } from "../server"
+import { supabase } from "../server"
 import { auth } from "@clerk/nextjs/server"
 import { revalidatePath } from "next/cache"
 
@@ -13,7 +13,7 @@ export async function deleteOrg(org_id: string) {
 
   try {
     // Verify the user owns this organization before deleting
-    const { data: org, error: fetchError } = await supabaseAdmin
+    const { data: org, error: fetchError } = await supabase
       .from('organizations')
       .select('user_id')
       .eq('org_id', org_id)
@@ -30,7 +30,7 @@ export async function deleteOrg(org_id: string) {
     }
 
     // Delete the organization
-    const { error: deleteError } = await supabaseAdmin
+    const { error: deleteError } = await supabase
       .from('organizations')
       .delete()
       .eq('org_id', org_id)

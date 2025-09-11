@@ -1,11 +1,11 @@
 "use server"
 
-import { supabaseAdmin } from '../server'
+import { supabase } from '../server'
 import { auth } from '@clerk/nextjs/server'
 
 export async function getSingleOrg(org_id: string) {
     const { userId } = await auth()
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await supabase
         .from('organizations')
         .select()
         .eq("user_id", userId)

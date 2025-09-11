@@ -1,6 +1,6 @@
 "use server"
 
-import { supabaseAdmin } from '../server'
+import { supabase } from '../server'
 import { auth } from "@clerk/nextjs/server"
 import type { Org } from '@/app/types'
 
@@ -16,7 +16,7 @@ export async function newOrg(formData: FormData) {
       user_id: userId as string || ""
     }
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await supabase
     .from('organizations')
     .insert([org])
         

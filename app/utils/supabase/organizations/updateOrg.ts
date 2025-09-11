@@ -1,6 +1,6 @@
 "use server"
 
-import { supabaseAdmin } from '../server'
+import { supabase } from '../server'
 import { auth } from "@clerk/nextjs/server"
 import type { Org } from '@/app/types'
 
@@ -22,7 +22,7 @@ export async function updateOrg(formData: FormData) {
     user_id: userId as string, // still enforce ownership
   }
 
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await supabase
     .from("organizations")
     .update(updatedOrg)
     .eq("org_id", org_id)          // update only the matching org
