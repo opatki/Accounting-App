@@ -2,14 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/app/utils/supabase/server";
-
-type LineRow = {
-  account_name: string;
-  account_type: string;
-  debit: number;
-  credit: number;
-  date: string;
-};
+import type { LineRow, JournalEntryLineWithJoin } from "@/app/types";
 
 export default function Ledger({ params }: {params: Promise<{ orgId: string }>}) {
   const [rows, setRows] = useState<LineRow[]>([]);
@@ -30,24 +23,24 @@ export default function Ledger({ params }: {params: Promise<{ orgId: string }>})
       }
 
       const normalized: LineRow[] = Array.isArray(data)
-        ? data.map((d: any) => ({
-            account_name: String(d.account_name),
-            account_type: String(d.account_type),
-            debit: d.debit == null ? 0 : Number(d.debit),
-            credit: d.credit == null ? 0 : Number(d.credit),
-            date: d.journal_entries ? String(d.journal_entries.date) : "",
-          }))
-        : [];
+      ? (data as JournalEntryLineWithJoin[]).map((d) => ({
+          account_name: String(d.account_name),
+          account_type: String(d.account_type),
+          debit: d.debit == null ? 0 : Number(d.debit),
+          credit: d.credit == null ? 0 : Number(d.credit),
+          date: String(d.journal_entries?.date) ?? "",
+        }))
+      : [];
 
       setRows(normalized);
     }
 
     fetchData();
-  }, []);
+  }, [params]);
 
   // Date filtering
   const now = new Date();
-  let cutoff = new Date();
+  const cutoff = new Date();
 
   if (filter === "month") {
     cutoff.setMonth(now.getMonth() - 1);

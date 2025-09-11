@@ -11,6 +11,7 @@ type Props = {
   entry?: JournalEntry | null
 }
 
+
 export default function JournalEntryForm({ org_id, lines, setLines, resetForm, entry }: Props) {
   function addLine() {
     setLines([...lines, { account_type: "", account_name: "", debit: 0, credit: 0 }])
@@ -26,7 +27,7 @@ export default function JournalEntryForm({ org_id, lines, setLines, resetForm, e
         const description = formData.get("description") as string
 
         // Gather lines dynamically
-        const lines: any[] = []
+        const lines: JournalEntryLine[] = []
         let i = 0
         while (formData.has(`lines[${i}][account_type]`)) {
             lines.push({
@@ -43,7 +44,7 @@ export default function JournalEntryForm({ org_id, lines, setLines, resetForm, e
             await updateEntry(entry.entry_id, {
             date,
             description,
-            lines,
+            lines
             })
         } else {
             // creating

@@ -8,7 +8,6 @@ import type { Org } from "../types"
 import OrgCard from "../components/organizations/OrgCard"
 import DeleteConfirmationModal from "../components/DeleteConfirmationModal"
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 
 export default function Organizations({ organizations }: { organizations: Org[] }) {
     const [showForm, setShowForm] = useState(false)

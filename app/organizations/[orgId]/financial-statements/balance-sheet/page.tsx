@@ -2,18 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/app/utils/supabase/server";
+import type { LineRow, JournalEntryLineWithJoin } from "@/app/types";
 
-type LineRow = {
-  account_name: string;
-  account_type: string;
-  debit: number;
-  credit: number;
-  date: string;
-};
 
 export default function BalanceSheet({ params }: { params: Promise<{ orgId: string }> }) {
   const [rows, setRows] = useState<LineRow[]>([]);
-  const [filter, setFilter] = useState<"month" | "quarter" | "year" | "all">("all");
 
   useEffect(() => {
     async function fetchData() {
@@ -29,21 +22,21 @@ export default function BalanceSheet({ params }: { params: Promise<{ orgId: stri
         return;
       }
 
-      const normalized: LineRow[] = Array.isArray(data)
-        ? data.map((d: any) => ({
-            account_name: String(d.account_name),
-            account_type: String(d.account_type),
-            debit: d.debit == null ? 0 : Number(d.debit),
-            credit: d.credit == null ? 0 : Number(d.credit),
-            date: d.journal_entries ? String(d.journal_entries.date) : "",
-          }))
-        : [];
+    const normalized: LineRow[] = Array.isArray(data)
+      ? (data as JournalEntryLineWithJoin[]).map((d) => ({
+          account_name: String(d.account_name),
+          account_type: String(d.account_type),
+          debit: d.debit == null ? 0 : Number(d.debit),
+          credit: d.credit == null ? 0 : Number(d.credit),
+          date: String(d.journal_entries?.date) ?? "",
+        }))
+      : [];
 
       setRows(normalized);
     }
 
     fetchData();
-  }, []);
+  }, [params]);
 
   function groupAccounts(rows: LineRow[], type: string) {
     const grouped: Record<string, number> = {};

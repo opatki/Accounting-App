@@ -2,14 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/app/utils/supabase/server";
+import type { LineRow, JournalEntryLineWithJoin } from "@/app/types";
 
-type LineRow = {
-  account_name: string;
-  account_type: string;
-  debit: number;
-  credit: number;
-  date: string;
-};
 
 export default function IncomeStatement({ params }: { params: Promise<{ orgId: string }> }) {
   const [rows, setRows] = useState<LineRow[]>([]);
@@ -30,24 +24,24 @@ export default function IncomeStatement({ params }: { params: Promise<{ orgId: s
       }
 
       const normalized: LineRow[] = Array.isArray(data)
-        ? data.map((d: any) => ({
-            account_name: String(d.account_name),
-            account_type: String(d.account_type),
-            debit: d.debit == null ? 0 : Number(d.debit),
-            credit: d.credit == null ? 0 : Number(d.credit),
-            date: d.journal_entries ? String(d.journal_entries.date) : "",
-          }))
-        : [];
+      ? (data as JournalEntryLineWithJoin[]).map((d) => ({
+          account_name: String(d.account_name),
+          account_type: String(d.account_type),
+          debit: d.debit == null ? 0 : Number(d.debit),
+          credit: d.credit == null ? 0 : Number(d.credit),
+          date: String(d.journal_entries?.date) ?? "",
+        }))
+      : [];
 
       setRows(normalized);
     }
 
     fetchData();
-  }, []);
+  }, [params]);
 
   // Date filter
   const now = new Date();
-  let cutoff = new Date();
+  const cutoff = new Date();
   if (filter === "month") cutoff.setMonth(now.getMonth() - 1);
   if (filter === "quarter") cutoff.setMonth(now.getMonth() - 3);
   if (filter === "year") cutoff.setFullYear(now.getFullYear() - 1);
@@ -107,7 +101,7 @@ export default function IncomeStatement({ params }: { params: Promise<{ orgId: s
       <div className="flex justify-start mx-6 my-3">
         <select
           value={filter}
-          onChange={(e) => setFilter(e.target.value as any)}
+          onChange={(e) => setFilter(e.target.value as "month" | "quarter" | "year" | "all")}
           className="border rounded px-3 py-2 shadow text-[#9A3F3F] font-semibold"
         >
           <option value="" disabled>

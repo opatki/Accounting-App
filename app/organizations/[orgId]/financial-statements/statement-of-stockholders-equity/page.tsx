@@ -2,14 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/app/utils/supabase/server";
-
-type LineRow = {
-  account_name: string;
-  account_type: string;
-  debit: number;
-  credit: number;
-  date: string;
-};
+import type { LineRow, JournalEntryLineWithJoin } from "@/app/types";
 
 export default function StatementOfEquity({ params }: {params: Promise<{ orgId: string }>}) {
   const [rows, setRows] = useState<LineRow[]>([]);
@@ -30,23 +23,23 @@ export default function StatementOfEquity({ params }: {params: Promise<{ orgId: 
       }
 
       const normalized: LineRow[] = Array.isArray(data)
-        ? data.map((d: any) => ({
-            account_name: String(d.account_name),
-            account_type: String(d.account_type),
-            debit: d.debit == null ? 0 : Number(d.debit),
-            credit: d.credit == null ? 0 : Number(d.credit),
-            date: d.journal_entries ? String(d.journal_entries.date) : "",
-          }))
-        : [];
+      ? (data as JournalEntryLineWithJoin[]).map((d) => ({
+          account_name: String(d.account_name),
+          account_type: String(d.account_type),
+          debit: d.debit == null ? 0 : Number(d.debit),
+          credit: d.credit == null ? 0 : Number(d.credit),
+          date: String(d.journal_entries?.date) ?? "",
+        }))
+      : [];
 
       setRows(normalized);
     }
 
     fetchData();
-  }, []);
+  }, [params]);
 
   const now = new Date();
-  let cutoff = new Date();
+  const cutoff = new Date();
   if (filter === "month") cutoff.setMonth(now.getMonth() - 1);
   if (filter === "quarter") cutoff.setMonth(now.getMonth() - 3);
   if (filter === "year") cutoff.setFullYear(now.getFullYear() - 1);
@@ -81,7 +74,7 @@ export default function StatementOfEquity({ params }: {params: Promise<{ orgId: 
       <div className="flex justify-start mx-6 my-3">
         <select
           value={filter}
-          onChange={(e) => setFilter(e.target.value as any)}
+          onChange={(e) => setFilter(e.target.value as "month" | "quarter" | "year" | "all")}
           className="border rounded px-3 py-2 shadow text-[#9A3F3F] font-semibold"
         >
           <option value="" disabled>
@@ -96,7 +89,7 @@ export default function StatementOfEquity({ params }: {params: Promise<{ orgId: 
 
       <div className="border-3 border-[#9A3F3F] mx-5 mb-5">
         <div className="bg-[#9A3F3F] text-center text-3xl text-white p-5 font-bold">
-          <h1>Statement of Stockholders' Equity</h1>
+          <h1>Statement of Stockholder&apos;s Equity</h1>
           {filterLabel !== "All" && <p className="text-[0.6em]">For {filterLabel} Ending {today}</p>}
         </div>
 
@@ -119,7 +112,7 @@ export default function StatementOfEquity({ params }: {params: Promise<{ orgId: 
           </div>
 
           <div className="font-bold flex justify-between border-t pt-4 text-xl">
-            <span>Ending Stockholder's Equity</span>
+            <span>Ending Stockholder&apos;s Equity</span>
             <span>${endingEquity.toLocaleString()}</span>
           </div>
         </div>

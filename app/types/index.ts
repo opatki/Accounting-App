@@ -1,6 +1,3 @@
-import type { ReactNode } from "react"
-import { JSXSource } from "react/jsx-dev-runtime"
-
 // Data Types
 export type Org = {
     org_id: string
@@ -47,13 +44,13 @@ export type JournalEntry = {
 }
 
 export type JournalEntryLine = {
-  line_id: string
-  created_at: string
+  line_id?: string
+  created_at?: string
   account_name: string
   account_type: string
   debit: number 
   credit: number 
-  entry_id: string
+  entry_id?: string
 }
 
 export type JournalEntriesPageProps = {
@@ -65,4 +62,21 @@ export type JournalEntriesPageProps = {
         endDate?: string
         [key: string]: string | string[] | undefined
     }>
+}
+
+export type LineRow = {
+  account_name: string;
+  account_type: string;
+  debit: number;
+  credit: number;
+  date: string;
+}
+
+
+export type JournalEntryLineWithJoin = {
+  account_name?: string | null;
+  account_type?: string | null;
+  debit?: number | null;
+  credit?: number | null;
+  journal_entries?: { date?: string; org_id?: string } | null;
 }
