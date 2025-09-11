@@ -177,7 +177,7 @@ export default function Organizations({ organizations }: { organizations: Org[] 
 
                         <button
                         type="submit"
-                        className="bg-[#9A3F3F] hover:bg-[#5A0808] text-white px-6 py-2 rounded-lg font-semibold"
+                        className="bg-[#9A3F3F] hover:bg-[#5A0808] text-white px-6 py-2 rounded-lg font-semibold cursor-pointer"
                         >
                         {editingOrg ? "UPDATE" : "SUBMIT"}
                         </button>
