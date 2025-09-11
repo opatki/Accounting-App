@@ -17,7 +17,6 @@ Bookify is a **fullstack accounting application** built with **Next.js** and **S
 - **Time-Saving**: Eliminates manual posting and calculations, reducing errors and increasing efficiency.  
 
 ---
-
 ## Tech Stack
 
 - **Frontend**: Next.js, React  
@@ -26,4 +25,5 @@ Bookify is a **fullstack accounting application** built with **Next.js** and **S
 - **Languages**: TypeScript
 
 ---
-
+## Demo
+![Demo of the app](Bookify.gif)
