@@ -6,7 +6,7 @@ import type { LineRow, JournalEntryLineWithJoin } from "@/app/types";
 
 export default function Ledger({ params }: {params: Promise<{ orgId: string }>}) {
   const [rows, setRows] = useState<LineRow[]>([]);
-  const [filter, setFilter] = useState<"month" | "quarter" | "year" | "all">("month");
+  const [filter, setFilter] = useState<"month" | "quarter" | "year" | "all">("all");
 
   useEffect(() => {
     async function fetchData() {

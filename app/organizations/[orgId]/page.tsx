@@ -15,7 +15,9 @@ export default async function Organization({ params }: OrganizationPageProps) {
                 ? org.image
                 : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
             }
-            alt="Organization image"/>
+            alt="Organization image"
+            fill
+            />
             <div className="flex flex-col justify-center items-center gap-8">
                 <p className="text-2xl text-center text-[#9A3F3F] max-w-100">{org.description ? org.description : "One of the better organizations"}</p> 
                 {org.link ? <a target="_blank" className="text-2xl text-[#9A3F3F] underline hover:text-[#5A0808]" href={org.link}>{org.name}&apos;s Website</a> : ""} 
